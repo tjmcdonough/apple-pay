@@ -87,7 +87,7 @@ export default {
         amount: amount.toString(),
       });
 
-      return Axios.post(`${serverUrl}/user/constructApplePayRequest`, raw, {
+      return Axios.post(`${serverUrl}/user/createApplePayRequest`, raw, {
         headers,
       })
         .then((response) => {
@@ -101,7 +101,7 @@ export default {
     },
 
     authapplepay() {
-      return Axios.get(`${serverUrl}/user/authapplepay`)
+      return Axios.get(`${serverUrl}/user/createApplePaySession`)
         .then((response) => {
           this.info = response;
         })
@@ -126,7 +126,7 @@ export default {
         ipaddress: this.IpAddress,
       };
 
-      return Axios.post(`${serverUrl}/user/createApplePayorder`, orderParams, {
+      return Axios.post(`${serverUrl}/user/createApplePayOrder`, orderParams, {
         headers,
       })
         .then((response) => {

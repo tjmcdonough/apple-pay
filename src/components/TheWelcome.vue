@@ -12,7 +12,6 @@
 
 <script>
 import Axios from "axios";
-
 export default {
   data() {
     return {
@@ -26,12 +25,12 @@ export default {
       // These need to be set
       nftPrice: 15.59,
       estimatedTransactionCostUSD: 49.59,
-      amount: null,
-      token_id: null,
-      contract_id: null,
+      amount: 14.55,
+      token_id: 1,
+      contract_id: '0x0eAfA761ce742Fb9C9Dc99190cEC726BE85E6Ca4',
       walletId: null,
       token: null,
-      ipaddress: "0.0.0.0",
+      ipaddress: '0.0.0.0',
     };
   },
   mounted() {
@@ -46,16 +45,15 @@ export default {
     showButton() {
       return window.safari !== undefined;
     },
-
     //Invoked Method
     onApplePayButtonClicked() {
+      console.log('onApplePayButtonClicked');
       if (!ApplePaySession) {
         return;
       }
       // Define ApplePayPaymentRequest
       var applePayRequest = this.getApplePayRequest();
       //Get Request Based Wyre Quote
-
       // Create ApplePaySession
       const session = new ApplePaySession(3, applePayRequest);
       session.onvalidatemerchant = async (event) => {
@@ -77,16 +75,13 @@ export default {
       };
       session.begin();
     },
-
     getApplePayRequest() {
+      console.log('getApplePayRequest');
       const serverUrl = "https://dev.acmedao.com";
-
       this.amount = nftPrice + estimatedTransactionCostUSD;
-
       const raw = JSON.stringify({
         amount: amount.toString(),
       });
-
       return Axios.post(`${serverUrl}/user/createApplePayRequest`, raw, {
         headers,
       })
@@ -99,8 +94,8 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-
     authapplepay() {
+      console.log('createApplePaySession');
       return Axios.get(`${serverUrl}/user/createApplePaySession`)
         .then((response) => {
           this.info = response;
@@ -111,21 +106,19 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-
-    handleApplePayOrder() {
+    handleApplePayOrder(e) {
+      console.log('handleApplePayOrder');
       // variables
-
       const orderParams = {
         price: this.nftPrice,
         usdPrice: this.amount,
         fees: this.estimatedTransactionCostUSD,
         token_id: this.tokenId,
         contract_id: this.contractId,
-        walletId: this.wallet,
-        token: this.paymentToken,
-        ipaddress: this.IpAddress,
+        walletId: this.walletId,
+        token: e.payment.token,
+        ipaddress: this.ipAddress,
       };
-
       return Axios.post(`${serverUrl}/user/createApplePayOrder`, orderParams, {
         headers,
       })

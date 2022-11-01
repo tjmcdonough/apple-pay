@@ -13,9 +13,10 @@
 <script>
 import Axios from "axios";
 const serverUrl = 'https://dev.acmedao.com';
-const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFmdkNWWUsxRGxKWkRkNzRtSTI3VSJ9.eyJpc3MiOiJodHRwczovL2FjbWVjb3JlLWRldi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0NTYyNTIxOTAzMjE5MjU3MzIiLCJhdWQiOlsiaHR0cHM6Ly9kZXYuYWNtZWRhby5jb20vYXV0aCIsImh0dHBzOi8vYWNtZWNvcmUtZGV2LnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NjcyODU0MzEsImV4cCI6MTY2NzI5MjYzMSwiYXpwIjoib0pyaDBrd012Y1ExTDJuUXd5Yjh0b0F0OE95WmlWQ2QiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.gc7RIFY025bUteCiygv576KWtGrkAdASsmnPRxV1_8JnSdbYXkxOPoljxS9lCTftQrx5vpBpAT47EO7fZeIkhbdZrTK5IIoUcm9bdoGE0pDOkMAZex73uMxZfWQ4XY4yLQ48OGxeeP4nqJrDsPRhCSXezLG6sxf4TLF8RXBX9kMGwh7wY_pBjNhFl457YggCOvkV5_nUdishFaiTTNSR8XIIg4Jx0jqbWwqKGcmxiBUizWdgzkRICsiV_iVaOQ16vt4OaVkTdtpwenguzu5IRiirTOQivmAMzXJioMF-DhJcVyoa4XtUTl8l9-AUI5THLEbm9zly2q7HaE49z_UREg' 
+const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFmdkNWWUsxRGxKWkRkNzRtSTI3VSJ9.eyJpc3MiOiJodHRwczovL2FjbWVjb3JlLWRldi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0NTYyNTIxOTAzMjE5MjU3MzIiLCJhdWQiOlsiaHR0cHM6Ly9kZXYuYWNtZWRhby5jb20vYXV0aCIsImh0dHBzOi8vYWNtZWNvcmUtZGV2LnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NjcyODg5MDAsImV4cCI6MTY2NzI5NjEwMCwiYXpwIjoib0pyaDBrd012Y1ExTDJuUXd5Yjh0b0F0OE95WmlWQ2QiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.TaUonoP_MvxoKisk02cQkSuWh4RXThwXSo_weg5ThxbVSAHgYGDIsBQkTDmJHrMKgaCq5Nv34eGHJgx2ngPiebyuvTbj5FxRvbd2CEU7yjGnCaynj9J2Q6TFMhbYsYIWsYcPw9gdkh3JH51DbDKbNwFllpDrbGFmn7G1BaQQPNHh7pEht5NwMgcFc7lpjvO3XwfF8d1-HjnLeY3QZc9m0c5b0KJem1oZZ4zmZG8eJEl9wkCwQeesJnCovrEPocCyKoVGcW_To7TKF2s9fwd2xtPXETEmAbQaUF644Tc_7_vHJcKI6KOSXQCU_k1QNujnaf-vmY4xoE_ApujPspWz5g'
 
 //window.vm.config.globalProperties.$cookie.getCookie('session');
+
 const headers = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -97,11 +98,11 @@ export default {
       session.begin();
     },
     getApplePayRequest() {
-      console.log('getApplePayRequest');
+      console.log('posting to createApplePayRequest');
       const serverUrl = "https://dev.acmedao.com";
       this.amount = this.nftPrice + this.estimatedTransactionCostUSD;
       const raw = JSON.stringify({
-        amount: amount.toString(),
+        amount: this.amount.toString(),
       });
       return Axios.post(`${serverUrl}/user/createApplePayRequest`, raw, {
         headers,
@@ -116,8 +117,8 @@ export default {
         .finally(() => (this.loading = false));
     },
     authapplepay() {
-      console.log('createApplePaySession');
-      return Axios.get(`${serverUrl}/user/createApplePaySession`)
+      console.log('posting to createApplePaySession');
+      return Axios.post(`${serverUrl}/user/createApplePaySession`, { }, { headers })
         .then((response) => {
           this.info = response;
         })

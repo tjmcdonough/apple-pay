@@ -5,6 +5,7 @@
       type="buy"
       locale="en-GB"
       @click="onApplePayButtonClicked"
+      
     ></apple-pay-button>
   </div>
 </template>
@@ -12,14 +13,24 @@
 <script>
 import Axios from "axios";
 const serverUrl = 'https://dev.acmedao.com';
-const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFmdkNWWUsxRGxKWkRkNzRtSTI3VSJ9.eyJpc3MiOiJodHRwczovL2FjbWVjb3JlLWRldi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0NTYyNTIxOTAzMjE5MjU3MzIiLCJhdWQiOlsiaHR0cHM6Ly9kZXYuYWNtZWRhby5jb20vYXV0aCIsImh0dHBzOi8vYWNtZWNvcmUtZGV2LnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NjcyODU0MzEsImV4cCI6MTY2NzI5MjYzMSwiYXpwIjoib0pyaDBrd012Y1ExTDJuUXd5Yjh0b0F0OE95WmlWQ2QiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.gc7RIFY025bUteCiygv576KWtGrkAdASsmnPRxV1_8JnSdbYXkxOPoljxS9lCTftQrx5vpBpAT47EO7fZeIkhbdZrTK5IIoUcm9bdoGE0pDOkMAZex73uMxZfWQ4XY4yLQ48OGxeeP4nqJrDsPRhCSXezLG6sxf4TLF8RXBX9kMGwh7wY_pBjNhFl457YggCOvkV5_nUdishFaiTTNSR8XIIg4Jx0jqbWwqKGcmxiBUizWdgzkRICsiV_iVaOQ16vt4OaVkTdtpwenguzu5IRiirTOQivmAMzXJioMF-DhJcVyoa4XtUTl8l9-AUI5THLEbm9zly2q7HaE49z_UREg' //window.vm.config.globalProperties.$cookie.getCookie('session');
+const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFmdkNWWUsxRGxKWkRkNzRtSTI3VSJ9.eyJpc3MiOiJodHRwczovL2FjbWVjb3JlLWRldi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0NTYyNTIxOTAzMjE5MjU3MzIiLCJhdWQiOlsiaHR0cHM6Ly9kZXYuYWNtZWRhby5jb20vYXV0aCIsImh0dHBzOi8vYWNtZWNvcmUtZGV2LnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NjcyODU0MzEsImV4cCI6MTY2NzI5MjYzMSwiYXpwIjoib0pyaDBrd012Y1ExTDJuUXd5Yjh0b0F0OE95WmlWQ2QiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.gc7RIFY025bUteCiygv576KWtGrkAdASsmnPRxV1_8JnSdbYXkxOPoljxS9lCTftQrx5vpBpAT47EO7fZeIkhbdZrTK5IIoUcm9bdoGE0pDOkMAZex73uMxZfWQ4XY4yLQ48OGxeeP4nqJrDsPRhCSXezLG6sxf4TLF8RXBX9kMGwh7wY_pBjNhFl457YggCOvkV5_nUdishFaiTTNSR8XIIg4Jx0jqbWwqKGcmxiBUizWdgzkRICsiV_iVaOQ16vt4OaVkTdtpwenguzu5IRiirTOQivmAMzXJioMF-DhJcVyoa4XtUTl8l9-AUI5THLEbm9zly2q7HaE49z_UREg' 
 
+//window.vm.config.globalProperties.$cookie.getCookie('session');
 const headers = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
     Authorization: 'Bearer ' + accessToken,
     withCredentials: true,
 };
+
+async function loginToAcmeBackend() {
+    try {
+        await axios.post(`${serverUrl}/user/login`, {}, { headers });
+        console.log('Successfully logged in with payment method');
+    } catch (err) {
+        console.log('Failed to log in ' + err);
+    }
+}
 
 export default {
   data() {
@@ -45,6 +56,10 @@ export default {
       "https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"
     );
     document.head.appendChild(recaptchaScript);
+
+    axios.defaults.withCredentials = true;
+
+    await loginToAcmeBackend();
   },
   methods: {
     showButton() {
@@ -82,7 +97,8 @@ export default {
     },
     getApplePayRequest() {
       console.log('getApplePayRequest');
-      this.amount = nftPrice + estimatedTransactionCostUSD;
+      const serverUrl = "https://dev.acmedao.com";
+      this.amount = this.nftPrice + this.estimatedTransactionCostUSD;
       const raw = JSON.stringify({
         amount: amount.toString(),
       });

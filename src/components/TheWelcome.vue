@@ -5,23 +5,28 @@
       type="buy"
       locale="en-GB"
       @click="onApplePayButtonClicked"
-      v-if="showButton()"
     ></apple-pay-button>
   </div>
 </template>
-
+<!-- v-if="showButton()" -->
 <script>
 import Axios from "axios";
+const serverUrl = 'https://dev.acmedao.com';
+const accessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFmdkNWWUsxRGxKWkRkNzRtSTI3VSJ9.eyJpc3MiOiJodHRwczovL2FjbWVjb3JlLWRldi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0NTYyNTIxOTAzMjE5MjU3MzIiLCJhdWQiOlsiaHR0cHM6Ly9kZXYuYWNtZWRhby5jb20vYXV0aCIsImh0dHBzOi8vYWNtZWNvcmUtZGV2LnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NjcyODU0MzEsImV4cCI6MTY2NzI5MjYzMSwiYXpwIjoib0pyaDBrd012Y1ExTDJuUXd5Yjh0b0F0OE95WmlWQ2QiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.gc7RIFY025bUteCiygv576KWtGrkAdASsmnPRxV1_8JnSdbYXkxOPoljxS9lCTftQrx5vpBpAT47EO7fZeIkhbdZrTK5IIoUcm9bdoGE0pDOkMAZex73uMxZfWQ4XY4yLQ48OGxeeP4nqJrDsPRhCSXezLG6sxf4TLF8RXBX9kMGwh7wY_pBjNhFl457YggCOvkV5_nUdishFaiTTNSR8XIIg4Jx0jqbWwqKGcmxiBUizWdgzkRICsiV_iVaOQ16vt4OaVkTdtpwenguzu5IRiirTOQivmAMzXJioMF-DhJcVyoa4XtUTl8l9-AUI5THLEbm9zly2q7HaE49z_UREg' //window.vm.config.globalProperties.$cookie.getCookie('session');
+
+const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: 'Bearer ' + accessToken,
+    withCredentials: true,
+};
+
 export default {
   data() {
     return {
       info: null,
       loading: true,
       errored: false,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
       // These need to be set
       nftPrice: 15.59,
       estimatedTransactionCostUSD: 49.59,
@@ -77,7 +82,6 @@ export default {
     },
     getApplePayRequest() {
       console.log('getApplePayRequest');
-      const serverUrl = "https://dev.acmedao.com";
       this.amount = nftPrice + estimatedTransactionCostUSD;
       const raw = JSON.stringify({
         amount: amount.toString(),
